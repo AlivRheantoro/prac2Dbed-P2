@@ -43,8 +43,7 @@ class DBEDAssign2():
     def insert_data(self,pcode,locality,state):
         """Insert data into the database"""
         query = "INSERT INTO pcode (postcode, locality, state) VALUES (%s, %s, %s);"
-        print(f"Inserting: {pcode}, {locality}, {state}")  # debug
-        self.cursor.execute(query, (pcode.strip(), locality.strip(), state.strip()))
+        self.cursor.execute(query, (pcode, locality, state))
 
 
     def readData(self,fname):
@@ -57,14 +56,14 @@ class DBEDAssign2():
 
             # Your code here to insert the data
             for line in csv:
-                line = line.strip()
-                if not line:
-                    continue
                 print("Reading line:", line)
                 parts = [p.strip() for p in line.split(",")]
-                if len(parts) == 3:
-                    pcode, locality, state = parts
-                    self.insert_data(pcode, locality, state)
+                if len(parts) != 3:
+                    continue
+
+                pcode, locality, state = parts
+                self.insert_data(pcode, locality, state)
+                row_count +=1
 
             csv.close()
             #Commit
