@@ -60,6 +60,7 @@ class DBEDAssign2():
                 line = line.strip()
                 if not line:
                     continue
+                print("Reading line:", line)
                 parts = [p.strip() for p in line.split(",")]
                 if len(parts) == 3:
                     pcode, locality, state = parts
