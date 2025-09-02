@@ -38,6 +38,9 @@ class DBEDAssign2():
     def select_by_pcode(self,pcode):
         """Perform a SELECT * query using the pcode parameter for postcode. Returns the query
         result as a list object."""
+        query = "SELECT * FROM pcode WHERE postcode = %s;"
+        self.cursor.execute(query, (pcode,))
+        return self.cursor.fetchall()
 
 
     def insert_data(self,pcode,locality,state):
