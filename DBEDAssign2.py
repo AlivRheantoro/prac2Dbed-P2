@@ -59,13 +59,10 @@ class DBEDAssign2():
 
             # Your code here to insert the data
             for line in csv:
-                parts = [p.strip() for p in line.split(",")]
-                if len(parts) != 3:
-                    continue
-
-                pcode, locality, state = parts
-                self.insert_data(pcode, locality, state)
-                row_count +=1
+                data = line.strip().split(',')
+                if len(data) == 4:
+                    _, pcode, locality, state = data
+                    self.insert_data(pcode, locality, state)
 
             csv.close()
             #Commit
@@ -78,17 +75,22 @@ class DBEDAssign2():
         """
 
         # Scan the database for the counts
-        self.cursor.execute("SELECT postcode FROM pcode")
-        rows = self.cursor.fetchall()
-        fourth_digits = [row[0][3] for row in rows if len(row[0]) == 4]
-        counts = {}
-        for digit in fourth_digits:
-            counts[digit] = counts.get(digit, 0) + 1
+        query = "SELECT SUBSTRING(postcode, 4, 1) as digit FROM pcode WHERE LENGTH(postcode) = 4;"
+        self.cursor.execute(query)
+        digits = [row[0] for row in self.cursor.fetchall()]
+        digit_counts = {str(i): 0 for i in range(10)}
+        for digit in digits:
+            if digit in digit_counts:
+                digit_counts[digit] += 1
+
+        total_digits = len(digits)
 
         # Calculate the frequencies and total entropy
-        total = len(fourth_digits)
-        probabilities = [count / total for count in counts.values()]
-        entropy = -sum(p * math.log2(p) for p in probabilities if p > 0)
+        entropy = 0
+        for count in digit_counts.values():
+            if count > 0:
+                probability = count / total_digits
+                entropy -= probability * math.log2(probability)
 
         # Return the total entropy
         return entropy
