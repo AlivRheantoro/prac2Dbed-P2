@@ -30,6 +30,9 @@ class DBEDAssign2():
 
     def show_all(self):
         """Select all rows in the database's pcode table and return it as a list to the user"""
+        query = "SELECT * from pcode;"
+        self.cursor.execute(query,)
+        return self.cursor.fetchall()
 
 
     def select_by_pcode(self,pcode):
@@ -39,6 +42,8 @@ class DBEDAssign2():
 
     def insert_data(self,pcode,locality,state):
         """Insert data into the database"""
+        query = "INSERT INTO pcode (postcode, locality, state) VALUES (%s, %s, %s)"
+        self.cursor.execute(query, (pcode, locality, state))
 
 
     def readData(self,fname):
@@ -50,6 +55,11 @@ class DBEDAssign2():
             csv.readline()
 
             # Your code here to insert the data
+            for line in csv:
+                parts = line.strip().split(",")
+                if len(parts) == 3:
+                    pcode, locality, state = parts
+                    self.insert_data(pcode, locality, state)
 
             csv.close()
             #Commit
