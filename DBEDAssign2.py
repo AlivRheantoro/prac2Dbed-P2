@@ -2,8 +2,8 @@ import mysql.connector
 import math
 
 # DBED Assignment 2
-# Student ID:
-# Name:
+# Student ID: a1924315
+# Name: Aliv Rheantoro
 
 class DBEDAssign2():
     def __init__(self,name):
@@ -42,8 +42,9 @@ class DBEDAssign2():
 
     def insert_data(self,pcode,locality,state):
         """Insert data into the database"""
-        query = "INSERT INTO pcode (postcode, locality, state) VALUES (%s, %s, %s)"
-        self.cursor.execute(query, (pcode, locality, state))
+        query = "INSERT INTO pcode (postcode, locality, state) VALUES (%s, %s, %s);"
+        print(f"Inserting: {pcode}, {locality}, {state}")  # debug
+        self.cursor.execute(query, (pcode.strip(), locality.strip(), state.strip()))
 
 
     def readData(self,fname):
@@ -56,7 +57,10 @@ class DBEDAssign2():
 
             # Your code here to insert the data
             for line in csv:
-                parts = line.strip().split(",")
+                line = line.strip()
+                if not line:
+                    continue
+                parts = [p.strip() for p in line.split(",")]
                 if len(parts) == 3:
                     pcode, locality, state = parts
                     self.insert_data(pcode, locality, state)
