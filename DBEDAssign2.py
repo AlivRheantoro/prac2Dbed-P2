@@ -56,7 +56,6 @@ class DBEDAssign2():
 
             # Your code here to insert the data
             for line in csv:
-                print("Reading line:", line)
                 parts = [p.strip() for p in line.split(",")]
                 if len(parts) != 3:
                     continue
@@ -76,7 +75,17 @@ class DBEDAssign2():
         """
 
         # Scan the database for the counts
+        self.cursor.execute("SELECT postcode FROM pcode")
+        rows = self.cursor.fetchall()
+        fourth_digits = [row[0][3] for row in rows if len(row[0]) == 4]
+        counts = {}
+        for digit in fourth_digits:
+            counts[digit] = counts.get(digit, 0) + 1
 
         # Calculate the frequencies and total entropy
+        total = len(fourth_digits)
+        probabilities = [count / total for count in counts.values()]
+        entropy = -sum(p * math.log2(p) for p in probabilities if p > 0)
 
         # Return the total entropy
+        return entropy
